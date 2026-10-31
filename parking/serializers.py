@@ -127,11 +127,18 @@ class ReservationSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+    
     def validate(self, attrs):
+        parking_space = attrs.get(
+            "parking_space",
+            getattr(self.instance, "parking_space", None),
+        )
+
         start_time = attrs.get(
             "start_time",
             getattr(self.instance, "start_time", None),
         )
+
         end_time = attrs.get(
             "end_time",
             getattr(self.instance, "end_time", None),
@@ -151,10 +158,42 @@ class ReservationSerializer(serializers.ModelSerializer):
                 )
             })
 
+        if parking_space and start_time and end_time:
+            overlapping_reservations = Reservation.objects.filter(
+                parking_space=parking_space,
+                start_time__lt=end_time,
+                end_time__gt=start_time,
+            ).exclude(
+                status__in=[
+                    Reservation.ReservationStatus.CANCELLED,
+                    Reservation.ReservationStatus.COMPLETED,
+                ]
+            )
+
+            if self.instance:
+                overlapping_reservations = (
+                    overlapping_reservations.exclude(
+                        pk=self.instance.pk
+                    )
+                )
+
+            if overlapping_reservations.exists():
+                raise serializers.ValidationError({
+                    "parking_space": (
+                        "Kjo hapësirë është e rezervuar "
+                        "gjatë kësaj periudhe kohore."
+                    )
+                })
+
         return attrs
 
 
+
 class PaymentSerializer(serializers.ModelSerializer):
+    reservation = serializers.PrimaryKeyRelatedField(
+        queryset=Reservation.objects.all(),
+        validators=[],
+    )
     reservation_id = serializers.IntegerField(
         source="reservation.id",
         read_only=True,
@@ -176,6 +215,23 @@ class PaymentSerializer(serializers.ModelSerializer):
             "status",
             "payment_date",
         ]
+
+    def validate_reservation(self, value):
+        existing_payment = Payment.objects.filter(
+            reservation=value
+        )
+
+        if self.instance:
+            existing_payment = existing_payment.exclude(
+                pk=self.instance.pk
+            )
+
+        if existing_payment.exists():
+            raise serializers.ValidationError(
+                "Ky rezervim tashmë ka një pagesë të regjistruar."
+            )
+
+        return value
 
     def validate_amount(self, value):
         if value <= 0:

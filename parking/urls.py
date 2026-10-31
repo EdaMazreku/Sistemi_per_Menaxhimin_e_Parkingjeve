@@ -7,6 +7,7 @@ from .views import (
     ParkingSpaceViewSet,
     ReservationViewSet,
     PaymentViewSet,
+    LoginView,
 )
 
 router = DefaultRouter()
@@ -33,5 +34,6 @@ router.register(
 )
 
 urlpatterns = [
+    path("login/", LoginView.as_view(), name="api-login"),
     path("", include(router.urls)),
 ]

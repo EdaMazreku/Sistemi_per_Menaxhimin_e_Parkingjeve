@@ -1,7 +1,6 @@
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
 from .models import ParkingLot, ParkingSpace, Reservation, Payment
 from .serializers import (
     ParkingLotSerializer,
@@ -9,6 +8,10 @@ from .serializers import (
     ReservationSerializer,
     PaymentSerializer,
 )
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class ParkingLotViewSet(viewsets.ModelViewSet):
@@ -69,3 +72,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+
+class LoginView(ObtainAuthToken):
+    pass
