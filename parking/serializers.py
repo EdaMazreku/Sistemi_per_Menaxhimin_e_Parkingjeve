@@ -65,6 +65,7 @@ class ParkingSpaceSerializer(serializers.ModelSerializer):
             "status",
         ]
         read_only_fields = ["id", "parking_lot_name"]
+        validators = []
 
     def validate(self, attrs):
         parking_lot = attrs.get(
