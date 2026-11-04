@@ -8,7 +8,7 @@ class ParkingLot(models.Model):
     name = models.CharField(max_length=150)
     address = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    capacity = models.PositiveIntegerField(default=0)
+    capacity = models.PositiveIntegerField()
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     is_active = models.BooleanField(default=True)
@@ -161,8 +161,8 @@ class Payment(models.Model):
         verbose_name_plural = "Pagesat"
         constraints = [
             models.CheckConstraint(
-                condition=Q(amount__gte=0),
-                name="payment_amount_non_negative",
+                condition=Q(amount__gt=0),
+                name="payment_amount_positive",
             )
         ]
 

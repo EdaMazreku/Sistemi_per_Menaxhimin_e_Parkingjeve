@@ -159,6 +159,21 @@ class ReservationSerializer(serializers.ModelSerializer):
                 )
             })
 
+        if parking_space:
+            if parking_space.status == ParkingSpace.SpaceStatus.MAINTENANCE:
+                raise serializers.ValidationError({
+                    "parking_space": (
+                        "Kjo hapësirë është në mirëmbajtje dhe nuk mund të rezervohet."
+                    )
+                })
+
+            if not parking_space.parking_lot.is_active:
+                raise serializers.ValidationError({
+                    "parking_space": (
+                        "Ky parking është joaktiv dhe nuk mund të bëhen rezervime."
+                    )
+                })
+
         if parking_space and start_time and end_time:
             overlapping_reservations = Reservation.objects.filter(
                 parking_space=parking_space,
@@ -187,8 +202,6 @@ class ReservationSerializer(serializers.ModelSerializer):
                 })
 
         return attrs
-
-
 
 class PaymentSerializer(serializers.ModelSerializer):
     reservation = serializers.PrimaryKeyRelatedField(
