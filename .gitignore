@@ -1,7 +1,25 @@
+# Virtual environment
 .venv/
+venv/
+
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+
+# Django
 db.sqlite3
+
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# IDEs and editors
 .idea/
 .vscode/
+
+# Testing and coverage
+.coverage
+htmlcov/
+.pytest_cache/
