@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.db import models
 from django.db.models import F, Q
@@ -128,10 +127,10 @@ class Payment(models.Model):
         FAILED = "failed", "Dështoi"
         REFUNDED = "refunded", "E rimbursuar"
 
-    reservation = models.OneToOneField(
+    reservation = models.ForeignKey(
         Reservation,
         on_delete=models.CASCADE,
-        related_name="payment",
+        related_name="payments",
     )
 
     amount = models.DecimalField(
@@ -168,3 +167,4 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Pagesa për rezervimin #{self.reservation_id}"
+    
