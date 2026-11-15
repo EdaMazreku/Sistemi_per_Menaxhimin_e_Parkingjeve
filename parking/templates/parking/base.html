@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ParkEase | Menaxhimi i Parkingjeve{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container navbar-content">
+
+            <a href="{% url 'home' %}" class="logo">
+                <span class="logo-icon">P</span>
+                <span>ParkEase</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link guest-link">Kryefaqja</a>
+                <a href="{% url 'dashboard' %}" class="nav-link user-link" id="dashboard-link" hidden>Paneli im</a>
+                <a href="{% url 'parking-list' %}" class="nav-link">Parking</a>
+                <a href="{% url 'reservations' %}" class="nav-link user-link" id="reservations-link" hidden>Rezervimet</a>
+                <a href="{% url 'payments' %}" class="nav-link user-link" id="payments-link" hidden>Pagesat</a>
+                <a href="{% url 'home' %}#about" class="nav-link guest-link">Rreth nesh</a>
+            </nav>
+
+            <div class="nav-actions">
+
+                <div id="guest-nav">
+                    <a href="{% url 'login' %}" class="btn btn-outline">Kyçu</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Regjistrohu</a>
+                </div>
+
+                <div id="user-nav" hidden>
+                    <button id="nav-logout-button" class="btn btn-logout">
+                        Shkyqu
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+
+        {% if messages %}
+            <div class="container messages-container">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+
+            <div>
+                <h3>ParkEase</h3>
+                <p>Menaxhimi i parkingjeve, më i thjeshtë.</p>
+            </div>
+
+            <p>&copy; 2026 ParkEase. Të gjitha të drejtat e rezervuara.</p>
+
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>
