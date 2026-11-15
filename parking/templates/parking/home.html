@@ -1,0 +1,302 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Kryefaqja | ParkEase{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="container hero-content">
+
+        <div class="hero-text">
+            <span class="hero-label">
+                ZGJIDHJE INTELIGJENTE PËR PARKIM
+            </span>
+
+            <h1>
+                Gjej vendparkimin
+                <span>e duhur</span>
+                brenda pak sekondash.
+            </h1>
+
+            <p>
+                Thuaju lamtumirë shqetësimeve rreth parkimit.
+                Gjej vendparkime të lira, shiko hapësirat
+                e disponueshme dhe rezervo vendin tënd
+                lehtësisht me ParkEase.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="{% url 'register' %}" class="btn btn-primary">
+                    Fillo tani
+                    <span>&rarr;</span>
+                </a>
+
+                <a href="#how-it-works" class="btn btn-outline">
+                    Si funksionon?
+                </a>
+            </div>
+
+            <div class="hero-trust">
+                <div class="trust-icon">✓</div>
+                <span>Parkim i thjeshtë, i përshtatshëm dhe i sigurt</span>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="parking-card">
+
+                <div class="parking-card-header">
+                    <div>
+                        <span class="card-label">PAMJE ILUSTRUESE E PARKINGUT</span>
+                        <h3>Gjej vendin tënd</h3>
+                    </div>
+
+                    <div class="parking-icon">P</div>
+                </div>
+
+                <div class="parking-illustration">
+                    <div class="parking-lane">
+                        <div class="parking-space available">
+                            <span>P</span>
+                        </div>
+
+                        <div class="parking-space occupied">
+                            <span>P</span>
+                        </div>
+
+                        <div class="parking-space available">
+                            <span>P</span>
+                        </div>
+
+                        <div class="parking-space available">
+                            <span>P</span>
+                        </div>
+
+                        <div class="parking-space occupied">
+                            <span>P</span>
+                        </div>
+
+                        <div class="parking-space available">
+                            <span>P</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="parking-card-footer">
+                    <div>
+                        <span class="status-dot"></span>
+                        Vendparkime të lira
+                    </div>
+
+                    <a href="{% url 'parking-list' %}" class="parking-card-cta">
+                        Gati për rezervim
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="floating-badge">
+                <span class="floating-icon">✓</span>
+                <div>
+                    <strong>Rezervim i lehtë</strong>
+                    <small>Rezervo me disa klikime</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- STATISTICS SECTION -->
+<section class="stats-section">
+    <div class="container stats-grid">
+
+        <div class="stat-item">
+            <h2>24/7</h2>
+            <p>Qasje online</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>Lehtë</h2>
+            <p>Rezervim online</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>Smart</h2>
+            <p>Menaxhim inteligjent i parkingut</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>Sigurt</h2>
+            <p>Llogari të përdoruesve</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- HOW IT WORKS SECTION -->
+<section class="how-section" id="how-it-works">
+
+    <div class="container">
+
+        <div class="section-heading">
+            <span class="section-label">SI FUNKSIONON?</span>
+
+            <h2>Parkimi bëhet më i thjeshtë</h2>
+
+            <p>
+                Gjetja dhe rezervimi i një vendparkimi
+                nuk ka qenë kurrë më i lehtë.
+            </p>
+        </div>
+
+        <div class="steps-grid">
+
+            <div class="step-card">
+                <div class="step-number">01</div>
+
+                <div class="step-icon">⌕</div>
+
+                <h3>Gjej parkingun</h3>
+
+                <p>
+                    Shiko parkingjet e disponueshme
+                    dhe gjej atë që të përshtatet.
+                </p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">02</div>
+
+                <div class="step-icon">▦</div>
+
+                <h3>Zgjidh vendparkimin</h3>
+
+                <p>
+                    Zgjidh një vendparkim të lirë
+                    dhe cakto kohën e preferuar.
+                </p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">03</div>
+
+                <div class="step-icon">✓</div>
+
+                <h3>Rezervo dhe shfrytëzo</h3>
+
+                <p>
+                    Përfundo rezervimin dhe
+                    menaxhoje atë përmes llogarisë tënde.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- FEATURES SECTION -->
+<section class="features-section" id="about">
+
+    <div class="container features-content">
+
+        <div class="features-text">
+            <span class="section-label">PSE PARKEASE?</span>
+
+            <h2>Një mënyrë më e zgjuar për menaxhimin e parkingut</h2>
+
+            <p>
+                ParkEase bashkon informacionet për parkingjet
+                dhe rezervimet në një platformë të vetme,
+                të thjeshtë dhe të përshtatshme për përdorim.
+            </p>
+
+            <div class="feature-list">
+
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <h4>Disponueshmëria e vendparkimeve</h4>
+                        <p>
+                            Kontrollo gjendjen e vendparkimeve
+                            dhe disponueshmërinë e tyre.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <h4>Rezervime të lehta</h4>
+                        <p>
+                            Rezervo vendparkimin përmes
+                            një procesi të thjeshtë.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <h4>Menaxhimi i rezervimeve</h4>
+                        <p>
+                            Shiko dhe menaxho të gjitha
+                            rezervimet nga një vend i vetëm.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="{% url 'register' %}" class="btn btn-primary">
+                Krijo llogarinë tënde
+            </a>
+
+        </div>
+
+        <div class="features-visual">
+            <div class="feature-main-card">
+                <div class="feature-main-icon">P</div>
+                <h3>Parkimi yt, zgjedhja jote.</h3>
+                <p>
+                    Gjithçka që të nevojitet për një
+                    përvojë më të thjeshtë parkimi.
+                </p>
+
+                <div class="feature-decoration">
+                    <span>01</span>
+                    <span>02</span>
+                    <span>03</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- CALL TO ACTION -->
+<section class="cta-section">
+    <div class="container cta-content">
+
+        <div>
+            <h2>Gati për të gjetur vendparkimin tënd?</h2>
+            <p>
+                Bashkohu me ParkEase dhe bëje përvojën
+                tënde të parkimit më të thjeshtë.
+            </p>
+        </div>
+
+        <a href="{% url 'register' %}" class="btn cta-button">
+            Fillo tani &rarr;
+        </a>
+
+    </div>
+</section>
+
+{% endblock %}
