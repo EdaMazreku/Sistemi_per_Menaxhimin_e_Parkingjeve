@@ -1,0 +1,139 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Paneli im | ParkEase{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-section">
+
+    <div class="container">
+
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <span class="section-label">PANELI I PËRDORUESIT</span>
+                <h1>Mirë se vini, <span id="dashboard-username">Përdorues</span>!</h1>
+                <p>Menaxho aktivitetet e tua të parkimit dhe rezervimet e tua.</p>
+            </div>
+
+            <a href="{% url 'parking-list' %}" class="btn btn-primary">
+                Shiko parkingjet
+            </a>
+        </div>
+
+        <!-- Loading Message -->
+        <div id="dashboard-loading" class="dashboard-message">
+            Duke ngarkuar panelin...
+        </div>
+
+        <!-- Error Message -->
+        <div id="dashboard-error" class="dashboard-message error" hidden></div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" hidden>
+
+            <!-- Statistics -->
+            <div class="dashboard-stats">
+
+                <div class="dashboard-stat-card">
+                    <div class="stat-icon blue">P</div>
+                    <div>
+                        <h2 id="total-parking-lots">0</h2>
+                        <p>Parkingje aktive</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-stat-card">
+                    <div class="stat-icon green">P</div>
+                    <div>
+                        <h2 id="available-spaces">0</h2>
+                        <p>Vendparkime të lira</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-stat-card">
+                    <div class="stat-icon purple">R</div>
+                    <div>
+                        <h2 id="total-reservations">0</h2>
+                        <p>Rezervimet e mia</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-stat-card">
+                    <div class="stat-icon orange">€</div>
+                    <div>
+                        <h2 id="pending-payments">0</h2>
+                        <p>Pagesa në pritje</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Reservations Table -->
+            <div class="dashboard-table-card">
+
+                <div class="dashboard-table-header">
+                    <div>
+                        <h2>Rezervimet e fundit</h2>
+                        <p>Shiko rezervimet e tua më të fundit.</p>
+                    </div>
+
+                    <a href="{% url 'reservations' %}" class="view-all-link">
+                        Shiko të gjitha
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="dashboard-table">
+                        
+                        <thead>
+                            <tr>
+                                <th>Rezervimi</th>
+                                <th>Parking</th>
+                                <th>Vendparkimi</th>
+                                <th>Koha e fillimit</th>
+                                <th>Koha e përfundimit</th>
+                                <th>Statusi</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="reservations-table-body">
+                        </tbody>
+
+                    </table>
+
+                    <div id="no-reservations" class="empty-state" hidden>
+                        <h3>Nuk ke ende rezervime</h3>
+                        <p>Ende nuk ke bërë ndonjë rezervim parkimi.</p>
+
+                        <a href="{% url 'parking-list' %}" class="btn btn-primary">
+                            Gjej vendparkim
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Payments Link -->
+            <div class="dashboard-table-card">
+                <div class="dashboard-table-header">
+                    <div>
+                        <h2>Pagesat e mia</h2>
+                        <p>Kontrollo pagesat dhe statusin e tyre.</p>
+                    </div>
+
+                    <a href="{% url 'payments' %}" class="view-all-link">
+                        Shiko pagesat
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
