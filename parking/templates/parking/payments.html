@@ -1,0 +1,94 @@
+{% extends "parking/base.html" %}
+
+{% block title %}Pagesat | ParkEase{% endblock %}
+
+{% block content %}
+
+<section class="payments-page">
+
+    <div class="payments-header">
+        <div>
+            <span class="section-eyebrow">PARKEASE</span>
+            <h1>Pagesat e mia</h1>
+            <p>Menaxhoni pagesat dhe kontrolloni historikun e tyre.</p>
+        </div>
+    </div>
+
+    <!-- Statistikat e pagesave -->
+    <div class="payment-statistics">
+
+        <div class="payment-stat-card">
+            <span class="stat-label">Gjithsej pagesa</span>
+            <h2 id="total-payments">0</h2>
+        </div>
+
+        <div class="payment-stat-card">
+            <span class="stat-label">Shuma e paguar</span>
+            <h2 id="total-amount">0.00 €</h2>
+        </div>
+
+        <div class="payment-stat-card">
+            <span class="stat-label">Shuma në pritje</span>
+            <h2 id="pending-payments">0.00 €</h2>
+        </div>
+
+    </div>
+
+    <!-- Rezervimet që presin pagesën -->
+    <div class="payment-section">
+
+        <div class="payment-section-heading">
+            <h2>Rezervimet për pagesë</h2>
+            <p>Zgjidhni rezervimin për të regjistruar pagesën.</p>
+        </div>
+
+        <div id="unpaid-reservations" class="unpaid-reservations">
+            <p class="payment-loading">Duke ngarkuar rezervimet...</p>
+        </div>
+
+    </div>
+
+    <!-- Historiku i pagesave -->
+    <div class="payment-section">
+
+        <div class="payment-section-heading">
+            <h2>Historiku i pagesave</h2>
+            <p>Shikoni pagesat e regjistruara dhe statusin e tyre.</p>
+        </div>
+
+        <div id="payments-loading" class="payment-loading">
+            Duke ngarkuar historikun...
+        </div>
+
+        <div id="payments-error" class="payment-error" hidden></div>
+
+        <div id="payments-empty" class="payments-empty" hidden>
+            <h3>Nuk keni ende pagesa</h3>
+            <p>Pagesat tuaja do të shfaqen këtu pasi të regjistroni pagesën e parë.</p>
+        </div>
+
+        <div class="payments-table-wrapper">
+
+            <table class="payments-table" id="payments-table" hidden>
+
+                <thead>
+                    <tr>
+                        <th>Nr. i rezervimit</th>
+                        <th>Shuma</th>
+                        <th>Mënyra e pagesës</th>
+                        <th>Statusi</th>
+                        <th>Data e pagesës</th>
+                    </tr>
+                </thead>
+
+                <tbody id="payments-table-body"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
