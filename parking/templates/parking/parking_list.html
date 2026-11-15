@@ -1,0 +1,195 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Parking | ParkEase{% endblock %}
+
+{% block content %}
+<section class="parking-page">
+    <div class="container">
+
+        <div class="parking-page-header">
+            <span class="section-label">GJEJ VENDPARKIMIN TËND</span>
+            <h1>Parkingjet tona</h1>
+            <p>Zgjidh parkingun dhe kontrollo vendparkimet e disponueshme.</p>
+        </div>
+
+        <!-- Legjenda e gjendjes së vendparkimeve -->
+        <div class="parking-legend">
+            <span><i class="legend-dot available"></i> E lirë</span>
+            <span><i class="legend-dot occupied"></i> E zënë</span>
+            <span><i class="legend-dot reserved"></i> E rezervuar</span>
+            <span><i class="legend-dot maintenance"></i> Në mirëmbajtje</span>
+        </div>
+
+        {% for item in parking_lots_data %}
+
+        <article class="parking-lot-section"
+                 data-parking-lot-id="{{ item.parking_lot.id }}">
+
+            <!-- Informacionet e parkingut -->
+            <div class="parking-lot-header">
+                <h2>{{ item.parking_lot.name }}</h2>
+                <p>{{ item.parking_lot.address }}</p>
+
+                {% if item.parking_lot.description %}
+                    <p>{{ item.parking_lot.description }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Statistikat e parkingut -->
+            <div class="parking-statistics">
+
+                <div class="parking-stat-card">
+                    <span class="stat-label">Gjithsej vendparkime</span>
+                    <strong>{{ item.total_spaces }}</strong>
+                </div>
+
+                <div class="parking-stat-card available-stat">
+                    <span class="stat-label">Të lira</span>
+                    <strong>{{ item.available_spaces }}</strong>
+                </div>
+
+                <div class="parking-stat-card occupied-stat">
+                    <span class="stat-label">Të zëna</span>
+                    <strong>{{ item.occupied_spaces }}</strong>
+                </div>
+
+                <div class="parking-stat-card reserved-stat">
+                    <span class="stat-label">Të rezervuara</span>
+                    <strong>{{ item.reserved_spaces }}</strong>
+                </div>
+
+                <div class="parking-stat-card maintenance-stat">
+                    <span class="stat-label">Në mirëmbajtje</span>
+                    <strong>{{ item.maintenance_spaces }}</strong>
+                </div>
+
+            </div>
+
+            <!-- Pamja vizuale e vendparkimeve -->
+            <div class="parking-layout">
+
+                <!-- Rreshti i parë -->
+                <div class="parking-row">
+
+                    {% for space in item.parking_spaces_top %}
+
+                    <div class="parking-space {{ space.display_status }}"
+                         data-space-id="{{ space.id }}"
+                         data-space-number="{{ space.space_number }}">
+
+                        <span class="space-number">
+                            {{ space.space_number }}
+                        </span>
+
+                        {% if space.display_status == 'occupied' %}
+                            <div class="car-icon">🚗</div>
+                        {% elif space.display_status == 'reserved' %}
+                            <div class="car-icon">🔒</div>
+                        {% elif space.display_status == 'available' %}
+                            <div class="car-icon">＋</div>
+                        {% else %}
+                            <div class="car-icon">🔧</div>
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- Kalimi qendror -->
+                <div class="parking-aisle">
+                    <span>←</span>
+                    <strong>KALIMI QENDROR</strong>
+                    <span>→</span>
+                </div>
+
+                <!-- Rreshti i dytë -->
+                <div class="parking-row">
+
+                    {% for space in item.parking_spaces_bottom %}
+
+                    <div class="parking-space {{ space.display_status }}"
+                         data-space-id="{{ space.id }}"
+                         data-space-number="{{ space.space_number }}">
+
+                        <span class="space-number">
+                            {{ space.space_number }}
+                        </span>
+
+                        {% if space.display_status == 'occupied' %}
+                            <div class="car-icon">🚗</div>
+                        {% elif space.display_status == 'reserved' %}
+                            <div class="car-icon">🔒</div>
+                        {% elif space.display_status == 'available' %}
+                            <div class="car-icon">＋</div>
+                        {% else %}
+                            <div class="car-icon">🔧</div>
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- Përmbledhja e parkingut -->
+            <div class="parking-summary">
+                <span>
+                    Gjithsej vendparkime: {{ item.total_spaces }}
+                </span>
+
+                <span>
+                    Lokacioni: {{ item.parking_lot.address }}
+                </span>
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="parking-empty-state">
+            <h2>Nuk ka parkingje aktive</h2>
+            <p>Aktualisht nuk ka parkingje të disponueshme.</p>
+        </div>
+
+        {% endfor %}
+
+
+        <!-- Paneli i përbashkët për rezervimin -->
+        <div id="booking-panel" class="booking-panel" hidden>
+
+            <h2>Rezervo vendparkimin</h2>
+
+            <p>
+                Vendparkimi i përzgjedhur:
+                <strong id="selected-space-number"></strong>
+            </p>
+
+            <div class="booking-form">
+
+                <div class="booking-field">
+                    <label for="start-time">Data dhe ora e fillimit</label>
+                    <input type="datetime-local" id="start-time" required>
+                </div>
+
+                <div class="booking-field">
+                    <label for="end-time">Data dhe ora e përfundimit</label>
+                    <input type="datetime-local" id="end-time" required>
+                </div>
+
+                <button
+                    type="button"
+                    id="booking-continue"
+                    class="btn btn-primary">
+                    Vazhdo me rezervimin
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
