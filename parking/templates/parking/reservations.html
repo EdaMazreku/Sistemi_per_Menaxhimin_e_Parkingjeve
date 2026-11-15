@@ -1,0 +1,99 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Rezervimet | ParkEase{% endblock %}
+
+{% block content %}
+
+<section class="reservations-page">
+    <div class="container">
+
+        <div class="reservations-header">
+            <span class="section-label">MENAXHIMI I PARKIMIT</span>
+            <h1>Rezervimet e mia</h1>
+            <p>Këtu mund të shikoni dhe menaxhoni të gjitha rezervimet tuaja.</p>
+        </div>
+
+        <!-- Statistikat -->
+        <div class="reservation-statistics">
+
+            <div class="reservation-stat-card">
+                <span>Gjithsej rezervime</span>
+                <strong id="reservations-total">0</strong>
+            </div>
+
+            <div class="reservation-stat-card">
+                <span>Në pritje</span>
+                <strong id="reservations-pending">0</strong>
+            </div>
+
+            <div class="reservation-stat-card">
+                <span>Të konfirmuara</span>
+                <strong id="reservations-confirmed">0</strong>
+            </div>
+
+            <div class="reservation-stat-card">
+                <span>Të përfunduara</span>
+                <strong id="reservations-completed">0</strong>
+            </div>
+
+            <div class="reservation-stat-card">
+                <span>Të anuluara</span>
+                <strong id="reservations-cancelled">0</strong>
+            </div>
+
+        </div>
+
+        <!-- Ngarkimi i rezervimeve -->
+        <div id="reservations-loading" class="reservations-message">
+            Duke ngarkuar rezervimet...
+        </div>
+
+        <!-- Mesazhi i gabimit -->
+        <div id="reservations-error"
+             class="reservations-message error"
+             hidden>
+        </div>
+
+        <!-- Lista e rezervimeve -->
+        <div id="reservations-content" hidden>
+
+            <div class="reservations-table-wrapper">
+
+                <table class="reservations-table">
+
+                    <thead>
+                        <tr>
+                            <th>Nr.</th>
+                            <th>Parking</th>
+                            <th>Vendparkimi</th>
+                            <th>Data e fillimit</th>
+                            <th>Data e përfundimit</th>
+                            <th>Statusi</th>
+                            <th>Veprimi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="my-reservations-body">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Kur përdoruesi nuk ka rezervime -->
+            <div id="reservations-empty" class="reservations-empty" hidden>
+                <div class="empty-icon">📋</div>
+                <h2>Nuk keni ende rezervime</h2>
+                <p>Rezervimet tuaja do të shfaqen këtu pasi të bëni rezervimin e parë.</p>
+
+                <a href="{% url 'parking-list' %}" class="btn btn-primary">
+                    Gjej vendparkim
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
