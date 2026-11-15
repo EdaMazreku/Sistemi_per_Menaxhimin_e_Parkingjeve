@@ -1,0 +1,133 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Regjistrohu | ParkEase{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container">
+
+        <!-- Pjesa informuese -->
+        <div class="auth-info">
+
+            <span class="section-label">MIRË SE VINI</span>
+
+            <h1>
+                Bashkohu me <span>ParkEase</span>
+            </h1>
+
+            <p>
+                Krijo llogarinë tënde dhe menaxho rezervimet
+                e vendparkimeve në mënyrë të thjeshtë.
+            </p>
+
+            <div class="auth-benefits">
+                <div>✓ Gjej vendparkime të lira</div>
+                <div>✓ Rezervo vendparkimin tënd</div>
+                <div>✓ Menaxho rezervimet lehtësisht</div>
+            </div>
+
+        </div>
+
+        <!-- Formulari i regjistrimit -->
+        <div class="auth-card">
+
+            <div class="auth-card-heading">
+
+                <div class="auth-logo">P</div>
+
+                <h2>Krijo llogarinë tënde</h2>
+
+                <p>Plotëso të dhënat për t'u regjistruar.</p>
+
+            </div>
+
+            <div id="register-message"
+                 class="auth-message"
+                 hidden>
+            </div>
+
+            <form id="register-form">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="register-username">
+                        Emri i përdoruesit
+                    </label>
+
+                    <input
+                        type="text"
+                        id="register-username"
+                        name="username"
+                        placeholder="Shkruaj emrin e përdoruesit"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="register-email">
+                        Adresa elektronike
+                    </label>
+
+                    <input
+                        type="email"
+                        id="register-email"
+                        name="email"
+                        placeholder="Shkruaj adresën elektronike"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">
+                        Fjalëkalimi
+                    </label>
+
+                    <input
+                        type="password"
+                        id="register-password"
+                        name="password"
+                        placeholder="Të paktën 8 karaktere"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password-confirm">
+                        Konfirmo fjalëkalimin
+                    </label>
+
+                    <input
+                        type="password"
+                        id="register-password-confirm"
+                        name="password_confirm"
+                        placeholder="Përsërite fjalëkalimin"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary auth-submit">
+                    Regjistrohu
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Tashmë ke llogari?
+                <a href="{% url 'login' %}">Kyçu këtu</a>
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

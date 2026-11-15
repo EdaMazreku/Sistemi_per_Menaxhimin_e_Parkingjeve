@@ -1,0 +1,79 @@
+{% extends 'parking/base.html' %}
+
+{% block title %}Kyçu | ParkEase{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container">
+
+        <div class="auth-info">
+            <span class="section-label">MIRË SE VINI PËRSËRI</span>
+
+            <h1>Mirë se vini përsëri në <span>ParkEase</span></h1>
+
+            <p>
+                Kyçu në llogarinë tënde dhe menaxho rezervimet
+                e vendparkimeve me lehtësi.
+            </p>
+
+            <div class="auth-benefits">
+                <div>✓ Gjej vendparkime të lira</div>
+                <div>✓ Menaxho rezervimet e tua</div>
+                <div>✓ Shijo një përvojë më të thjeshtë parkimi</div>
+            </div>
+        </div>
+
+        <div class="auth-card">
+
+            <div class="auth-card-heading">
+                <div class="auth-logo">P</div>
+                <h2>Kyçu në llogarinë tënde</h2>
+                <p>Shkruaj të dhënat për të vazhduar.</p>
+            </div>
+
+            <div id="login-message" class="auth-message" hidden></div>
+
+            <form id="login-form">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Emri i përdoruesit</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Shkruaj emrin e përdoruesit"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Fjalëkalimi</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Shkruaj fjalëkalimin"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary auth-submit">
+                    Kyçu
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Nuk ke llogari?
+                <a href="{% url 'register' %}">Krijo llogari</a>
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
