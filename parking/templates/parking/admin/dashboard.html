@@ -1,0 +1,178 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ParkEase | Administratori</title>
+
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                <h2>Park<span>Ease</span></h2>
+                <p>Paneli Administrativ</p>
+            </div>
+
+            <nav class="admin-nav">
+
+                <a href="{% url 'admin-dashboard' %}" class="active">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="{% url 'admin-parking-lots' %}">
+                    <span>▤</span>
+                    Parkingjet
+                </a>
+
+                <a href="{% url 'admin-parking-spaces' %}">
+                    <span>▥</span>
+                    Vendet e parkimit
+                </a>
+
+                <a href="{% url 'admin-reservations' %}">
+                    <span>▣</span>
+                    Rezervimet
+                </a>
+
+                <a href="{% url 'admin-payments' %}">
+                    <span>€</span>
+                    Pagesat
+                </a>
+
+                <a href="{% url 'admin-users' %}">
+                    <span>♙</span>
+                    Përdoruesit
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <button type="button" id="admin-logout">
+                    Dil nga llogaria
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+
+            <header class="admin-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Mirë se vini në panelin administrativ të ParkEase.</p>
+                </div>
+
+                <div class="admin-profile">
+                    <div class="admin-avatar">A</div>
+                    <div>
+                        <strong id="admin-username">Administratori</strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
+
+            
+            <!-- Statistics -->
+            <section class="admin-statistics">
+
+                <!-- Parking Lots -->
+                <div class="admin-stat-card stat-parking">
+                    <div class="admin-stat-heading">
+                        <span class="admin-stat-icon">🅿️</span>
+                        <p>Gjithsej parkingje</p>
+                    </div>
+                    <h2 id="total-parking-lots">0</h2>
+                </div>
+
+                <!-- Parking Spaces -->
+                <div class="admin-stat-card stat-spaces">
+                    <div class="admin-stat-heading">
+                        <span class="admin-stat-icon">🚗</span>
+                        <p>Vende parkimi</p>
+                    </div>
+                    <h2 id="total-parking-spaces">0</h2>
+                </div>
+
+                <!-- Reservations -->
+                <div class="admin-stat-card stat-reservations">
+                    <div class="admin-stat-heading">
+                        <span class="admin-stat-icon">📅</span>
+                        <p>Gjithsej rezervime</p>
+                    </div>
+                    <h2 id="total-reservations">0</h2>
+                </div>
+
+                <!-- Users -->
+                <div class="admin-stat-card stat-users">
+                    <div class="admin-stat-heading">
+                        <span class="admin-stat-icon">👥</span>
+                        <p>Gjithsej përdorues</p>
+                    </div>
+                    <h2 id="total-users">0</h2>
+                </div>
+
+            </section>
+
+            
+            <!-- Pending Reservations -->
+            <section class="admin-content-card">
+
+                <div class="admin-section-header">
+                    <div>
+                        <h2>Rezervimet në pritje të konfirmimit</h2>
+                        <p>Menaxhoni kërkesat e reja për rezervim.</p>
+                    </div>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Përdoruesi</th>
+                                <th>Parkingjet</th>
+                                <th>Vendi</th>
+                                <th>Data dhe ora</th>
+                                <th>Veprimet</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="pending-reservations">
+                            <tr>
+                                <td colspan="6">
+                                    Duke u ngarkuar...
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+    <script src="{% static 'js/app-modals.js' %}"></script>
+    <script src="{% static 'js/admin.js' %}"></script>
+
+</body>
+</html>

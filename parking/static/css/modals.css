@@ -1,0 +1,361 @@
+/* ==========================================
+   SHARED APP MODAL SYSTEM
+========================================== */
+
+.app-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(5px);
+    animation: appModalFadeIn 0.2s ease;
+}
+
+.app-modal-dialog {
+    width: 100%;
+    max-width: 430px;
+    padding: 32px;
+    background: var(--white, #ffffff);
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: appModalAppear 0.25s ease;
+}
+
+.app-modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.app-modal-success .app-modal-icon {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.app-modal-error .app-modal-icon {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.app-modal-warning .app-modal-icon {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.app-modal-info .app-modal-icon {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.app-modal-title {
+    margin: 0 0 12px;
+    color: var(--dark, #172554);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.app-modal-message {
+    margin: 0;
+    color: var(--muted, #64748b);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.app-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.app-modal-button {
+    min-width: 120px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.app-modal-button:hover {
+    transform: translateY(-1px);
+}
+
+.app-modal-button-primary {
+    color: #ffffff;
+    background: var(--primary, #2563eb);
+}
+
+.app-modal-button-primary:hover {
+    background: var(--primary-dark, #1d4ed8);
+}
+
+.app-modal-button-secondary {
+    color: var(--text, #334155);
+    background: #f1f5f9;
+}
+
+.app-modal-button-secondary:hover {
+    background: #e2e8f0;
+}
+
+.app-modal-button-danger {
+    color: #ffffff;
+    background: #dc2626;
+}
+
+.app-modal-button-danger:hover {
+    background: #b91c1c;
+}
+
+.app-modal-button:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 3px;
+}
+
+@keyframes appModalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes appModalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 500px) {
+    .app-modal-dialog {
+        padding: 26px 20px;
+    }
+
+    .app-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .app-modal-button {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-modal-overlay,
+    .app-modal-dialog {
+        animation: none;
+    }
+
+    .app-modal-button {
+        transition: none;
+    }
+}
+
+
+/* ================================
+   MODAL: EDIT USER
+================================ */
+
+#user-edit-modal .admin-modal-content {
+    width: 100%;
+    max-width: 520px;
+    padding: 30px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    animation: editUserModalIn 0.25s ease;
+}
+
+#user-edit-modal .admin-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e9edf3;
+}
+
+#user-edit-modal .admin-modal-header h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+#user-edit-modal .admin-modal-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 9px;
+    background: #f1f4f8;
+    color: #647084;
+    font-size: 25px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#user-edit-modal .admin-modal-close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Form fields */
+
+#user-edit-modal .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 19px;
+}
+
+#user-edit-modal .form-group label {
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#user-edit-modal .form-group input,
+#user-edit-modal .form-group select {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 14px;
+    border: 1px solid #d8dee8;
+    border-radius: 10px;
+    background: #f9fafc;
+    color: #172033;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+
+#user-edit-modal .form-group input:focus,
+#user-edit-modal .form-group select:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Error message */
+
+#user-edit-modal .error-message {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 13px;
+}
+
+/* Modal buttons */
+
+#user-edit-modal .admin-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid #e9edf3;
+}
+
+#user-edit-modal .admin-modal-actions button {
+    min-height: 44px;
+    padding: 11px 20px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#user-edit-modal .admin-cancel-button {
+    border: 1px solid #d8dee8;
+    background: #ffffff;
+    color: #475467;
+}
+
+#user-edit-modal .admin-cancel-button:hover {
+    background: #f3f5f8;
+}
+
+#user-edit-modal .admin-save-button {
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+#user-edit-modal .admin-save-button:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+#user-edit-modal .admin-save-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Modal animation */
+
+@keyframes editUserModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+    #user-edit-modal .admin-modal-content {
+        max-width: calc(100% - 30px);
+        padding: 22px;
+    }
+
+    #user-edit-modal .admin-modal-header h2 {
+        font-size: 20px;
+    }
+
+    #user-edit-modal .admin-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    #user-edit-modal .admin-modal-actions button {
+        width: 100%;
+    }
+}

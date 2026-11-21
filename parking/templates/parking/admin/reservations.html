@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase | Rezervimet</title>
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <h2>Park<span>Ease</span></h2>
+            <p>Paneli Administrativ</p>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="{% url 'admin-dashboard' %}"><span>▦</span>Dashboard</a>
+            <a href="{% url 'admin-parking-lots' %}"><span>▤</span>Parkingjet</a>
+            <a href="{% url 'admin-parking-spaces' %}"><span>▥</span>Vendet e parkimit</a>
+            <a href="{% url 'admin-reservations' %}" class="active"><span>▣</span>Rezervimet</a>
+            <a href="{% url 'admin-payments' %}"><span>€</span>Pagesat</a>
+            <a href="{% url 'admin-users' %}"><span>♙</span>Përdoruesit</a>
+        </nav>
+
+        <div class="admin-sidebar-bottom">
+
+            <button type="button" id="admin-logout">
+                Dil nga llogaria
+            </button>
+
+        </div>
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <div>
+                <h1>Rezervimet</h1>
+                <p>Shiko dhe menaxho rezervimet e përdoruesve.</p>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">A</div>
+                <div>
+                    <strong id="admin-username">Administratori</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+        </header>
+
+        <section class="admin-content-card">
+
+            <div class="admin-section-header">
+                <div>
+                    <h2>Lista e rezervimeve</h2>
+                    <p>Të gjitha rezervimet e regjistruara në sistem.</p>
+                </div>
+
+                <button
+                    type="button"
+                    id="add-reservation-button"
+                    class="admin-add-button"
+                >
+                    + Shto rezervim
+                </button>
+            </div>
+
+            <!-- Filtrimi dhe kërkimi -->
+            <div class="admin-filter-bar">
+
+                <div class="admin-form-group">
+                    <label for="reservation-search">Kërko rezervim</label>
+                    <input
+                        type="text"
+                        id="reservation-search"
+                        placeholder="Kërko sipas përdoruesit, parkingut ose ID-së..."
+                    >
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="reservation-status-filter">Filtro sipas statusit</label>
+                    <select id="reservation-status-filter">
+                        <option value="">Të gjitha statuset</option>
+                        <option value="pending">Në pritje</option>
+                        <option value="confirmed">Konfirmuar</option>
+                        <option value="cancelled">Anuluar</option>
+                        <option value="completed">Përfunduar</option>
+                    </select>
+                </div>
+
+                <button
+                    type="button"
+                    id="reset-reservation-filters"
+                    class="admin-reset-button"
+                >
+                    Pastro filtrat
+                </button>
+
+            </div>
+
+            <div id="reservations-error" class="admin-error" hidden></div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Përdoruesi</th>
+                            <th>Parking-u</th>
+                            <th>Vendi</th>
+                            <th>Fillimi</th>
+                            <th>Përfundimi</th>
+                            <th>Statusi</th>
+                            <th>Veprimet</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="reservations-table">
+                        <tr>
+                            <td colspan="8">Duke u ngarkuar...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+
+        <!-- Modal për ndryshimin e rezervimit -->
+        <div class="admin-modal" id="reservation-edit-modal" hidden>
+            <div class="admin-modal-content">
+
+                <div class="admin-modal-header">
+                    <h2>Ndrysho rezervimin</h2>
+                    <button type="button" id="close-reservation-modal">&times;</button>
+                </div>
+
+                <form id="reservation-edit-form">
+
+                    <input type="hidden" id="reservation-edit-id">
+
+                    <div class="admin-form-group">
+                        <label for="reservation-edit-parking-lot">
+                            Parking-u
+                        </label>
+                        <select id="reservation-edit-parking-lot" required>
+                            <option value="">Zgjidh parkingun</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="reservation-edit-space">
+                            Vendi i parkimit
+                        </label>
+                        <select id="reservation-edit-space" required disabled>
+                            <option value="">Së pari zgjidh parkingun</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="reservation-edit-start">
+                            Koha e fillimit
+                        </label>
+                        <input
+                            type="datetime-local"
+                            id="reservation-edit-start"
+                            required
+                        >
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="reservation-edit-end">
+                            Koha e përfundimit
+                        </label>
+                        <input
+                            type="datetime-local"
+                            id="reservation-edit-end"
+                            required
+                        >
+                    </div>
+
+                    <div id="reservation-edit-error"
+                         class="admin-error"
+                         hidden>
+                    </div>
+
+                    <div class="admin-modal-actions">
+                        <button type="button" id="cancel-reservation-modal">
+                            Anulo
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="admin-add-button"
+                            id="save-reservation"
+                        >
+                            Ruaj ndryshimet
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Modal për shtimin e rezervimit -->
+        <div class="admin-modal" id="reservation-add-modal" hidden>
+            <div class="admin-modal-content">
+
+                <div class="admin-modal-header">
+                    <h2>Shto rezervim të ri</h2>
+                    <button type="button" id="close-add-reservation-modal">
+                        &times;
+                    </button>
+                </div>
+
+                <form id="reservation-add-form">
+
+                    <div class="admin-form-group">
+                        <label for="new-reservation-user">Përdoruesi</label>
+                        <select id="new-reservation-user" required>
+                            <option value="">Zgjidh përdoruesin</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-reservation-lot">Parking-u</label>
+                        <select id="new-reservation-lot" required>
+                            <option value="">Zgjidh parkingun</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-reservation-space">Vendi i parkimit</label>
+                        <select id="new-reservation-space" required disabled>
+                            <option value="">Së pari zgjidh parkingun</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-reservation-start">Koha e fillimit</label>
+                        <input
+                            type="datetime-local"
+                            id="new-reservation-start"
+                            required
+                        >
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-reservation-end">Koha e përfundimit</label>
+                        <input
+                            type="datetime-local"
+                            id="new-reservation-end"
+                            required
+                        >
+                    </div>
+
+                    <div id="reservation-add-error"
+                        class="admin-error"
+                        hidden>
+                    </div>
+
+                    <div class="admin-modal-actions">
+                        <button type="button" id="cancel-add-reservation">
+                            Anulo
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="admin-add-button"
+                            id="save-new-reservation"
+                        >
+                            Krijo rezervimin
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="{% static 'js/app-modals.js' %}"></script>
+<script src="{% static 'js/admin.js' %}"></script>
+
+</body>
+</html>

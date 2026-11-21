@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEase | Pagesat</title>
+
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <aside class="admin-sidebar">
+
+        <div class="admin-logo">
+            <h2>Park<span>Ease</span></h2>
+            <p>Paneli Administrativ</p>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="{% url 'admin-dashboard' %}">
+                <span>▦</span>Dashboard
+            </a>
+
+            <a href="{% url 'admin-parking-lots' %}">
+                <span>▤</span>Parkingjet
+            </a>
+
+            <a href="{% url 'admin-parking-spaces' %}">
+                <span>▥</span>Vendet e parkimit
+            </a>
+
+            <a href="{% url 'admin-reservations' %}">
+                <span>▣</span>Rezervimet
+            </a>
+
+            <a href="{% url 'admin-payments' %}" class="active">
+                <span>€</span>Pagesat
+            </a>
+
+            <a href="{% url 'admin-users' %}">
+                <span>♙</span>Përdoruesit
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-bottom">
+
+            <button type="button" id="admin-logout">
+                Dil nga llogaria
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+
+            <div>
+                <h1>Pagesat</h1>
+                <p>Shiko dhe menaxho pagesat e rezervimeve.</p>
+            </div>
+
+            <div class="admin-profile">
+                <div class="admin-avatar">A</div>
+
+                <div>
+                    <strong id="admin-username">Administratori</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+
+        </header>
+
+        <section class="admin-content-card">
+
+            <div class="admin-section-header">
+                <div>
+                    <h2>Lista e pagesave</h2>
+                    <p>Të gjitha pagesat e regjistruara në sistem.</p>
+                </div>
+
+                <button
+                    type="button"
+                    id="add-payment-button"
+                    class="admin-add-button"
+                >
+                    + Shto pagesë
+                </button>
+            </div>
+
+            <!-- Kërkimi dhe filtrimi -->
+            <div class="admin-filter-bar">
+
+                <div class="admin-form-group">
+                    <label for="payment-search">
+                        Kërko pagesë
+                    </label>
+
+                    <input
+                        type="text"
+                        id="payment-search"
+                        placeholder="Kërko sipas ID-së ose rezervimit..."
+                    >
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="payment-status-filter">
+                        Filtro sipas statusit
+                    </label>
+
+                    <select id="payment-status-filter">
+                        <option value="">Të gjitha statuset</option>
+                        <option value="pending">Në pritje</option>
+                        <option value="paid">Paguar</option>
+                        <option value="failed">Dështuar</option>
+                        <option value="refunded">Rimbursuar</option>
+                        <option value="cancelled">Anuluar</option>
+                    </select>
+                </div>
+
+                <button
+                    type="button"
+                    id="reset-payment-filters"
+                    class="admin-reset-button"
+                >
+                    Pastro filtrat
+                </button>
+
+            </div>
+
+            <div
+                id="payments-error"
+                class="admin-error"
+                hidden
+            ></div>
+
+            <!-- Tabela e pagesave -->
+            <div class="admin-table-container">
+
+                <table class="admin-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ID Rezervimit</th>
+                            <th>Përdoruesi</th>
+                            <th>Parking-u</th>
+                            <th>Shuma</th>
+                            <th>Metoda</th>
+                            <th>Data e pagesës</th>
+                            <th>Statusi</th>
+                            <th>Veprimet</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="payments-table">
+                        <tr>
+                            <td colspan="9">
+                                Duke u ngarkuar...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Modal për shtimin e pagesës -->
+        <div class="admin-modal" id="payment-add-modal" hidden>
+            <div class="admin-modal-content">
+
+                <div class="admin-modal-header">
+                    <h2>Shto pagesë të re</h2>
+                    <button type="button" id="close-add-payment-modal">
+                        &times;
+                    </button>
+                </div>
+
+                <form id="payment-add-form">
+
+                    <div class="admin-form-group">
+                        <label for="new-payment-user">Përdoruesi</label>
+                        <select id="new-payment-user" required>
+                            <option value="">Zgjidh përdoruesin</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-payment-reservation">Rezervimi</label>
+                        <select id="new-payment-reservation" required disabled>
+                            <option value="">Së pari zgjidh përdoruesin</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="new-payment-method">Metoda e pagesës</label>
+                        <select id="new-payment-method" required>
+                            <option value="">Zgjidh metodën</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Kartelë</option>
+                        </select>
+                    </div>
+
+                    <div id="payment-add-error" class="admin-error" hidden></div>
+
+                    <div class="admin-modal-actions">
+                        <button type="button" id="cancel-add-payment">
+                            Anulo
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="admin-add-button"
+                            id="save-new-payment"
+                        >
+                            Krijo pagesën
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="{% static 'js/app-modals.js' %}"></script>
+<script src="{% static 'js/admin.js' %}"></script>
+
+</body>
+</html>
