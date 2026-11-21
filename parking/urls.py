@@ -8,6 +8,10 @@ from .views import (
     PaymentViewSet,
     LoginView,
     RegisterView,
+    AdminCheckView,
+    AdminUserCountView,
+    AdminUserListView,
+    AdminUserManagementListView,
 )
 
 router = DefaultRouter()
@@ -36,5 +40,10 @@ router.register(
 urlpatterns = [
     path("login/", LoginView.as_view(), name="api-login"),
     path("register/", RegisterView.as_view(), name="api-register"),
+    path("admin-check/", AdminCheckView.as_view(), name="admin-check"),
+    path("admin-user-count/", AdminUserCountView.as_view(), name="admin-user-count",),
     path("", include(router.urls)),
+    path("admin-users/", AdminUserListView.as_view(), name="admin-user-list"),
+    path("admin-users-management/", AdminUserManagementListView.as_view(), name="admin-user-management-list"),
+    path("admin-users-management/<int:pk>/", AdminUserManagementListView.as_view(), name="admin-user-management-detail"),
 ]

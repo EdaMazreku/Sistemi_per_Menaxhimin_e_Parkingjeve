@@ -1,189 +1,3 @@
-// ==========================================
-// SHARED MODAL SYSTEM
-// ==========================================
-
-let activeAppModal = null;
-
-function showAlertModal({
-    title = "Njoftim",
-    message = "",
-    type = "info",
-    confirmText = "Në rregull"
-} = {}) {
-    return createAppModal({
-        title,
-        message,
-        type,
-        confirmText,
-        showCancel: false
-    });
-}
-
-function showConfirmModal({
-    title = "Konfirmim",
-    message = "A dëshironi të vazhdoni?",
-    type = "warning",
-    confirmText = "Po, vazhdo",
-    cancelText = "Anulo"
-} = {}) {
-    return createAppModal({
-        title,
-        message,
-        type,
-        confirmText,
-        cancelText,
-        showCancel: true
-    });
-}
-
-function createAppModal({
-    title,
-    message,
-    type,
-    confirmText,
-    cancelText,
-    showCancel
-}) {
-    return new Promise((resolve) => {
-
-        // Mbyll modalin e mëparshëm nëse është ende aktiv.
-        if (activeAppModal) {
-            activeAppModal(false);
-        }
-
-        const previousFocus = document.activeElement;
-        const previousOverflow = document.body.style.overflow;
-
-        const icons = {
-            success: "✓",
-            error: "!",
-            warning: "?",
-            info: "i"
-        };
-
-        const overlay = document.createElement("div");
-        overlay.className = "app-modal-overlay";
-
-        const dialog = document.createElement("div");
-        dialog.className = `app-modal-dialog app-modal-${type}`;
-        dialog.setAttribute("role", "dialog");
-        dialog.setAttribute("aria-modal", "true");
-        dialog.setAttribute("aria-labelledby", "app-modal-title");
-        dialog.setAttribute("aria-describedby", "app-modal-message");
-
-        const icon = document.createElement("div");
-        icon.className = "app-modal-icon";
-        icon.textContent = icons[type] || icons.info;
-        icon.setAttribute("aria-hidden", "true");
-
-        const heading = document.createElement("h2");
-        heading.className = "app-modal-title";
-        heading.id = "app-modal-title";
-        heading.textContent = title;
-
-        const text = document.createElement("p");
-        text.className = "app-modal-message";
-        text.id = "app-modal-message";
-        text.textContent = message;
-
-        const actions = document.createElement("div");
-        actions.className = "app-modal-actions";
-
-        let cancelButton = null;
-
-        if (showCancel) {
-            cancelButton = document.createElement("button");
-            cancelButton.type = "button";
-            cancelButton.className = "app-modal-button app-modal-button-secondary";
-            cancelButton.textContent = cancelText;
-
-            actions.appendChild(cancelButton);
-        }
-
-        const confirmButton = document.createElement("button");
-        confirmButton.type = "button";
-        confirmButton.className =
-            `app-modal-button ${type === "error" ? "app-modal-button-danger" : "app-modal-button-primary"}`;
-        confirmButton.textContent = confirmText;
-
-        actions.appendChild(confirmButton);
-
-        dialog.append(icon, heading, text, actions);
-        overlay.appendChild(dialog);
-        document.body.appendChild(overlay);
-
-        document.body.style.overflow = "hidden";
-
-        let isClosed = false;
-
-        function closeModal(result) {
-            if (isClosed) return;
-
-            isClosed = true;
-            document.removeEventListener("keydown", handleKeydown);
-            overlay.remove();
-
-            document.body.style.overflow = previousOverflow;
-
-            activeAppModal = null;
-
-            if (previousFocus && typeof previousFocus.focus === "function") {
-                previousFocus.focus();
-            }
-
-            resolve(result);
-        }
-
-        activeAppModal = closeModal;
-
-        function handleKeydown(event) {
-            if (event.key === "Escape") {
-                event.preventDefault();
-                closeModal(false);
-                return;
-            }
-
-            if (event.key === "Tab") {
-                const focusable = dialog.querySelectorAll("button");
-
-                if (focusable.length === 0) return;
-
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-
-                if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault();
-                    last.focus();
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault();
-                    first.focus();
-                }
-            }
-        }
-
-        confirmButton.addEventListener("click", () => {
-            closeModal(true);
-        });
-
-        if (cancelButton) {
-            cancelButton.addEventListener("click", () => {
-                closeModal(false);
-            });
-        }
-
-        overlay.addEventListener("click", (event) => {
-            if (event.target === overlay) {
-                closeModal(false);
-            }
-        });
-
-        document.addEventListener("keydown", handleKeydown);
-
-        confirmButton.focus();
-    });
-}
-
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const loginForm = document.getElementById("login-form");
@@ -286,29 +100,105 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-// ==========================================
-// DASHBOARD AUTHENTICATION & LOGOUT
-// ==========================================
+/* ==========================================
+   AUTHENTICATION, ROLE CHECK & NAVBAR
+========================================== */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
-    const token = localStorage.getItem("authToken");
+    let token = localStorage.getItem("authToken");
+    let isAdmin = false;
 
-    // Përdoruesi i kyçur ridrejtohet nga kryefaqja në dashboard
-    if (token && window.location.pathname === "/") {
-        window.location.href = "/dashboard/";
+    const currentPath = window.location.pathname;
+
+    const guestNav = document.getElementById("guest-nav");
+    const userNav = document.getElementById("user-nav");
+
+    const guestLinks = document.querySelectorAll(".guest-link");
+    const userLinks = document.querySelectorAll(".user-link");
+
+    // Verifiko sesionin dhe rolin e përdoruesit
+    if (token) {
+        try {
+            const response = await fetch("/api/admin-check/", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Token ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("username");
+                token = null;
+
+            } else if (response.ok) {
+                const data = await response.json();
+                isAdmin = data.is_admin === true;
+
+            } else if (response.status !== 403) {
+                console.error("Nuk mund të verifikohej roli i përdoruesit.");
+            }
+
+        } catch (error) {
+            console.error("Gabim gjatë kontrollit të sesionit:", error);
+        }
+    }
+
+    // Shfaq navigimin sipas rolit
+    if (token) {
+        if (guestNav) guestNav.hidden = true;
+        if (userNav) userNav.hidden = false;
+
+        guestLinks.forEach(link => {
+            link.hidden = true;
+        });
+
+        userLinks.forEach(link => {
+            link.hidden = isAdmin;
+        });
+
+    } else {
+        if (guestNav) guestNav.hidden = false;
+        if (userNav) userNav.hidden = true;
+
+        guestLinks.forEach(link => {
+            link.hidden = false;
+        });
+
+        userLinks.forEach(link => {
+            link.hidden = true;
+        });
+    }
+
+    // Ridrejto sipas rolit
+    if (
+        token &&
+        ["/", "/login/", "/register/"].includes(currentPath)
+    ) {
+        window.location.href = isAdmin
+            ? "/admin-dashboard/"
+            : "/dashboard/";
+
         return;
     }
 
-    // Kontrollo nëse përdoruesi është i kyçur
-    if (window.location.pathname === "/dashboard/") {
+    // Mos lejo administratorin në dashboard-in e përdoruesit
+    if (currentPath === "/dashboard/") {
+
         if (!token) {
             window.location.href = "/login/";
             return;
         }
+
+        if (isAdmin) {
+            window.location.href = "/admin-dashboard/";
+            return;
+        }
     }
 
-    // Butoni për dalje nga llogaria
+    // Dalja nga llogaria
     const logoutButton = document.getElementById("nav-logout-button");
 
     if (logoutButton) {
@@ -324,61 +214,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 cancelText: "Qëndro"
             });
 
-            if (!confirmed) {
-                return;
-            }
+            if (!confirmed) return;
 
             localStorage.removeItem("authToken");
             localStorage.removeItem("username");
 
-            window.location.href = "/";
+            window.location.href = "/login/";
         });
-    }
-});
-
-
-/* =========================
-   NAVBAR AUTHENTICATION
-========================= */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const token = localStorage.getItem("authToken");
-
-    const guestNav = document.getElementById("guest-nav");
-    const userNav = document.getElementById("user-nav");
-
-    const guestLinks = document.querySelectorAll(".guest-link");
-    const userLinks = document.querySelectorAll(".user-link");
-
-    if (token) {
-
-        // Përdoruesi është i kyçur
-        if (guestNav) guestNav.hidden = true;
-        if (userNav) userNav.hidden = false;
-
-        guestLinks.forEach(function (link) {
-            link.hidden = true;
-        });
-
-        userLinks.forEach(function (link) {
-            link.hidden = false;
-        });
-
-    } else {
-
-        // Vizitori nuk është i kyçur
-        if (guestNav) guestNav.hidden = false;
-        if (userNav) userNav.hidden = true;
-
-        guestLinks.forEach(function (link) {
-            link.hidden = false;
-        });
-
-        userLinks.forEach(function (link) {
-            link.hidden = true;
-        });
-
     }
 
 });
@@ -397,6 +239,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const token = localStorage.getItem("authToken");
+
+    // Kontrollo nëse përdoruesi është administrator
+    if (token) {
+        try {
+            const response = await fetch("/api/admin-check/", {
+                headers: {
+                    "Authorization": `Token ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                if (data.is_admin === true) {
+                    window.location.replace("/admin-dashboard/");
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error("Gabim gjatë kontrollit të administratorit:", error);
+        }
+    }
 
     if (!token) {
         window.location.href = "/login/";
@@ -752,7 +616,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-
 
 /* =========================
    PARKING RESERVATION API
@@ -1139,10 +1002,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     (reservation, index) => {
                         const status = reservation.status || "pending";
 
-                        const canCancel = [
-                            "pending",
-                            "confirmed"
-                        ].includes(status);
+                        const canCancel =
+                            ["pending", "confirmed"].includes(status) &&
+                            new Date(reservation.start_time) > new Date();
 
                         const reservationId = Number(reservation.id);
 
@@ -1452,8 +1314,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
             }
 
+            // Kyç automatikisht përdoruesin pas regjistrimit
+            const loginResponse = await fetch("/api/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            });
+
+            const loginData = await loginResponse.json();
+
+            if (!loginResponse.ok || !loginData.token) {
+                throw new Error(
+                    "Llogaria u krijua, por kyçja automatike dështoi. Ju lutem kyçuni manualisht."
+                );
+            }
+
+            // Ruaj të dhënat e autentifikimit
+            localStorage.setItem("authToken", loginData.token);
+            localStorage.setItem("username", username);
+
+            // Shfaq mesazhin e suksesit
             showMessage(
-                "Regjistrimi u realizua me sukses! Tani mund të kyçeni.",
+                "Regjistrimi u realizua me sukses! Duke ju ridrejtuar në panel...",
                 "success"
             );
 
@@ -1461,9 +1348,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             registerButton.disabled = true;
 
+            // Ridrejto përdoruesin në Dashboard
             setTimeout(function () {
-                window.location.href = "/login/";
-            }, 2000);
+                window.location.href = "/dashboard/";
+            }, 1500);
 
         } catch (error) {
             console.error("Gabim gjatë regjistrimit:", error);
@@ -1482,7 +1370,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
 
 /* =========================
    MY PAYMENTS
@@ -1526,6 +1413,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const statusLabels = {
         pending: "Në pritje",
         paid: "E paguar",
+        cancelled: "E anuluar",
         failed: "Dështoi",
         refunded: "E rimbursuar"
     };
@@ -1932,4 +1820,42 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     await loadPayments();
+});
+
+// Aktivizimi i lidhjes përkatëse në navbar
+document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-links .nav-link");
+
+    function updateActiveNavLink() {
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+        });
+
+        const currentPath = window.location.pathname;
+        const currentHash = window.location.hash;
+
+        let activeLink = null;
+
+        // Nëse përdoruesi është te seksioni "Rreth nesh"
+        if (currentHash === "#about") {
+            activeLink = document.getElementById("about-link");
+        } else {
+            navLinks.forEach(link => {
+                if (
+                    link.hash === "" &&
+                    new URL(link.href).pathname === currentPath
+                ) {
+                    activeLink = link;
+                }
+            });
+        }
+
+        if (activeLink) {
+            activeLink.classList.add("active");
+        }
+    }
+
+    updateActiveNavLink();
+
+    window.addEventListener("hashchange", updateActiveNavLink);
 });

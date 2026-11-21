@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models import F, Q
 
-
 class ParkingLot(models.Model):
     name = models.CharField(max_length=150)
     address = models.CharField(max_length=255)
@@ -20,7 +19,6 @@ class ParkingLot(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class ParkingSpace(models.Model):
 
@@ -68,7 +66,6 @@ class ParkingSpace(models.Model):
     def __str__(self):
         return f"{self.parking_lot.name} - {self.space_number}"
 
-
 class Reservation(models.Model):
 
     class ReservationStatus(models.TextChoices):
@@ -114,7 +111,6 @@ class Reservation(models.Model):
     def __str__(self):
         return f"Rezervimi #{self.pk}"
 
-
 class Payment(models.Model):
 
     class PaymentMethod(models.TextChoices):
@@ -124,6 +120,7 @@ class Payment(models.Model):
     class PaymentStatus(models.TextChoices):
         PENDING = "pending", "Në pritje"
         PAID = "paid", "E paguar"
+        CANCELLED = "cancelled", "E anuluar"
         FAILED = "failed", "Dështoi"
         REFUNDED = "refunded", "E rimbursuar"
 

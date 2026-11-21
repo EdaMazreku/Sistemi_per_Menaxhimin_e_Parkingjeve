@@ -12,6 +12,34 @@
             <p>Zgjidh parkingun dhe kontrollo vendparkimet e disponueshme.</p>
         </div>
 
+        <!-- Search Bar për parkingjet -->
+        <div class="parking-search-container">
+
+            <div class="parking-search-box">
+                <span class="parking-search-icon">⌕</span>
+
+                <input
+                    type="search"
+                    id="parking-search"
+                    placeholder="Kërko parking sipas emrit ose adresës..."
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="clear-parking-search"
+                    hidden
+                    aria-label="Pastro kërkimin">
+                    ×
+                </button>
+            </div>
+
+            <p id="parking-search-results" class="parking-search-results">
+                Shfaqen të gjitha parkingjet.
+            </p>
+
+        </div>
+
         <!-- Legjenda e gjendjes së vendparkimeve -->
         <div class="parking-legend">
             <span><i class="legend-dot available"></i> E lirë</span>
@@ -192,4 +220,86 @@
 
     </div>
 </section>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("parking-search");
+    const clearButton = document.getElementById("clear-parking-search");
+    const resultsText = document.getElementById("parking-search-results");
+
+    const parkingLots = document.querySelectorAll(".parking-lot-section");
+
+    if (!searchInput || !clearButton || !resultsText) {
+        return;
+    }
+
+    function normalizeText(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function searchParkingLots() {
+        const searchValue = normalizeText(searchInput.value);
+        let visibleCount = 0;
+
+        parkingLots.forEach(function (parkingLot) {
+            const name = parkingLot.querySelector(
+                ".parking-lot-header h2"
+            )?.textContent || "";
+
+            const address = parkingLot.querySelector(
+                ".parking-lot-header p"
+            )?.textContent || "";
+
+            const description = parkingLot.querySelectorAll(
+                ".parking-lot-header p"
+            );
+
+            let descriptionText = "";
+
+            description.forEach(function (paragraph) {
+                descriptionText += " " + paragraph.textContent;
+            });
+
+            const searchableText = normalizeText(
+                name + " " + address + " " + descriptionText
+            );
+
+            const matches = searchableText.includes(searchValue);
+
+            parkingLot.style.display = matches ? "" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        clearButton.hidden = searchValue === "";
+
+        if (searchValue === "") {
+            resultsText.textContent = "Shfaqen të gjitha parkingjet.";
+        } else if (visibleCount === 0) {
+            resultsText.textContent = "Nuk u gjet asnjë parking.";
+        } else {
+            resultsText.textContent =
+                "U gjetën " + visibleCount +
+                (visibleCount === 1 ? " parking." : " parkingje.");
+        }
+    }
+
+    searchInput.addEventListener("input", searchParkingLots);
+
+    clearButton.addEventListener("click", function () {
+        searchInput.value = "";
+        searchParkingLots();
+        searchInput.focus();
+    });
+});
+</script>
 {% endblock %}

@@ -10,7 +10,6 @@ from rest_framework import serializers
 
 from .models import ParkingLot, ParkingSpace, Reservation, Payment
 
-
 class ParkingLotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingLot
@@ -69,7 +68,6 @@ class ParkingLotSerializer(serializers.ModelSerializer):
 
         return attrs
 
-
 class ParkingSpaceSerializer(serializers.ModelSerializer):
     parking_lot_name = serializers.CharField(
         source="parking_lot.name",
@@ -119,7 +117,6 @@ class ParkingSpaceSerializer(serializers.ModelSerializer):
                 })
 
         # Kontrollo kapacitetin kur krijohet një vendparkim i ri
-        # ose kur një vendparkim zhvendoset në parking tjetër.
         is_new_space = self.instance is None
 
         is_moving_to_another_lot = (
@@ -141,9 +138,12 @@ class ParkingSpaceSerializer(serializers.ModelSerializer):
 
         return attrs
 
-
-
 class ReservationSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=get_user_model().objects.all(),
+        required=False,
+    )
+
     username = serializers.CharField(
         source="user.username",
         read_only=True,
@@ -173,13 +173,19 @@ class ReservationSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
         ]
-
         read_only_fields = [
             "id",
-            "user",
             "status",
             "created_at",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        request = self.context.get("request")
+
+        if request and not request.user.is_staff:
+            self.fields["user"].read_only = True
 
     def validate(self, attrs):
         parking_space = attrs.get(
@@ -209,6 +215,18 @@ class ReservationSerializer(serializers.ModelSerializer):
                 "start_time": (
                     "Rezervimi duhet të fillojë në një kohë të ardhshme."
                 )
+            })
+
+        request = self.context.get("request")
+
+        if (
+            self.instance is None
+            and request
+            and request.user.is_staff
+            and not attrs.get("user")
+        ):
+            raise serializers.ValidationError({
+                "user": "Duhet të zgjidhni përdoruesin për rezervimin."
             })
 
         if parking_space:
@@ -264,6 +282,15 @@ class PaymentSerializer(serializers.ModelSerializer):
         source="reservation.id",
         read_only=True,
     )
+    username = serializers.CharField(
+        source="reservation.user.username",
+        read_only=True,
+    )
+
+    parking_lot_name = serializers.CharField(
+        source="reservation.parking_space.parking_lot.name",
+        read_only=True,
+    )
 
     class Meta:
         model = Payment
@@ -271,6 +298,8 @@ class PaymentSerializer(serializers.ModelSerializer):
             "id",
             "reservation",
             "reservation_id",
+            "username",
+            "parking_lot_name",
             "amount",
             "payment_method",
             "status",
@@ -400,4 +429,77 @@ class RegisterSerializer(serializers.Serializer):
         )
 
         return user
-    
+
+class AdminUserCreateSerializer(serializers.Serializer):
+
+    username = serializers.CharField(max_length=150)
+
+    email = serializers.EmailField(required=True)
+
+    password = serializers.CharField(
+        write_only=True,
+        min_length=8
+    )
+
+    password_confirm = serializers.CharField(
+        write_only=True
+    )
+
+    role = serializers.ChoiceField(
+        choices=["admin", "user"]
+    )
+
+    status = serializers.ChoiceField(
+        choices=["active", "inactive"],
+        default="active"
+    )
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError(
+                "Ky username tashmë është në përdorim."
+            )
+
+        return value
+
+    def validate_email(self, value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Ky email tashmë është në përdorim."
+            )
+
+        return value
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password_confirm"]:
+            raise serializers.ValidationError({
+                "password_confirm": "Fjalëkalimet nuk përputhen."
+            })
+
+        try:
+            validate_password(attrs["password"])
+        except DjangoValidationError as error:
+            raise serializers.ValidationError({
+                "password": error.messages
+            })
+
+        return attrs
+
+    def create(self, validated_data):
+
+        validated_data.pop("password_confirm")
+
+        password = validated_data.pop("password")
+        role = validated_data.pop("role")
+        status = validated_data.pop("status")
+
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=password,
+            is_staff=(role == "admin"),
+            is_superuser=False,
+            is_active=(status == "active")
+        )
+
+        return user

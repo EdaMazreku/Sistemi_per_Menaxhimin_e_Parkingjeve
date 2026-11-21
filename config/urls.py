@@ -47,6 +47,42 @@ urlpatterns = [
         name="payments",
     ),
 
+    path(
+        "admin-dashboard/",
+        TemplateView.as_view(template_name="parking/admin/dashboard.html"),
+        name="admin-dashboard",
+    ),
+
+    path(
+        "admin-dashboard/parking-lots/",
+        TemplateView.as_view(template_name="parking/admin/parking-lots.html"),
+        name="admin-parking-lots",
+    ),
+
+    path(
+        "admin-dashboard/parking-spaces/",
+        TemplateView.as_view(template_name="parking/admin/parking-spaces.html"),
+        name="admin-parking-spaces",
+    ),
+
+    path(
+        "admin-dashboard/reservations/",
+        TemplateView.as_view(template_name="parking/admin/reservations.html"),
+        name="admin-reservations",
+    ),
+
+    path(
+        "admin-dashboard/payments/",
+        TemplateView.as_view(template_name="parking/admin/payments.html"),
+        name="admin-payments",
+    ),
+    
+    path(
+        "admin-dashboard/users/",
+        TemplateView.as_view(template_name="parking/admin/users.html"),
+        name="admin-users",
+    ),
+
     path('admin/', admin.site.urls),
     path("api/", include("parking.urls")),
 ]

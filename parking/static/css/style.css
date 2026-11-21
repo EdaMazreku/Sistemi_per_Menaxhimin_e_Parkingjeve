@@ -77,6 +77,7 @@ a {
     border-radius: 10px;
 }
 
+
 .nav-links {
     display: flex;
     align-items: center;
@@ -91,8 +92,15 @@ a {
     transition: color 0.2s ease;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
     color: var(--primary);
+}
+
+.nav-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    border-radius: 3px;
 }
 
 .nav-actions,
@@ -1134,6 +1142,114 @@ a {
     font-size: 15px;
 }
 
+/* ==============================
+   PARKING SEARCH BAR
+============================== */
+
+.parking-search-container {
+    width: 100%;
+    max-width: 680px;
+    margin: 30px auto 35px;
+}
+
+.parking-search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 58px;
+    padding: 0 18px;
+    background: #ffffff;
+    border: 1px solid #dce4f0;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(23, 35, 55, 0.04);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.parking-search-box:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+}
+
+.parking-search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7b8798;
+    font-size: 23px;
+    flex-shrink: 0;
+}
+
+#parking-search {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding: 16px 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #172337;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+#parking-search::placeholder {
+    color: #9aa5b5;
+}
+
+#parking-search::-webkit-search-cancel-button {
+    display: none;
+}
+
+#clear-parking-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+#clear-parking-search:hover {
+    background: #e2e8f0;
+    color: #172337;
+}
+
+#clear-parking-search[hidden] {
+    display: none !important;
+}
+
+.parking-search-results {
+    margin: 10px 4px 0;
+    color: #7b8798;
+    font-size: 13px;
+    text-align: left;
+}
+
+/* Search bar në ekranet e vogla */
+@media (max-width: 600px) {
+    .parking-search-container {
+        margin: 24px auto 28px;
+    }
+
+    .parking-search-box {
+        min-height: 52px;
+        padding: 0 14px;
+        border-radius: 12px;
+    }
+
+    #parking-search {
+        font-size: 14px;
+    }
+}
+
 .parking-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1740,7 +1856,6 @@ a {
     color: #285eb5;
 }
 
-
 /* =================================
    MY RESERVATIONS PAGE
 ================================= */
@@ -2338,11 +2453,9 @@ a {
     color: #1e40af;
 }
 
-
 /* =================================
    RESPONSIVE DESIGN
 ================================= */
-
 
 /* =================================
    1. DASHBOARD RESPONSIVE
@@ -2353,7 +2466,6 @@ a {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
-
 
 /* =================================
    2. HOMEPAGE RESPONSIVE
@@ -2405,7 +2517,6 @@ a {
     }
 }
 
-
 /* =================================
    3. NAVBAR AND FOOTER RESPONSIVE
 ================================= */
@@ -2448,7 +2559,6 @@ a {
         text-align: center;
     }
 }
-
 
 /* =================================
    4. HOMEPAGE SECTIONS RESPONSIVE
@@ -2495,7 +2605,6 @@ a {
     }
 }
 
-
 /* =================================
    5. AUTHENTICATION PAGES RESPONSIVE
    Login and Registration
@@ -2525,7 +2634,6 @@ a {
     }
 }
 
-
 /* =================================
    6. PARKING LIST PAGE RESPONSIVE
 ================================= */
@@ -2544,7 +2652,6 @@ a {
         padding: 22px;
     }
 }
-
 
 /* =================================
    7. 2D PARKING LAYOUT RESPONSIVE
@@ -2624,7 +2731,6 @@ a {
     }
 }
 
-
 /* =================================
    9. MY RESERVATIONS PAGE RESPONSIVE
 ================================= */
@@ -2665,7 +2771,6 @@ a {
         padding: 13px 12px;
     }
 }
-
 
 /* =================================
    10. PAYMENTS PAGE RESPONSIVE
@@ -2709,7 +2814,6 @@ a {
     }
 }
 
-
 /* =================================
    11. UNPAID RESERVATION CARDS RESPONSIVE
 ================================= */
@@ -2737,7 +2841,6 @@ a {
     }
 }
 
-
 /* =================================
    12. REGISTRATION AND LOGIN MOBILE
 ================================= */
@@ -2753,7 +2856,6 @@ a {
     }
 }
 
-
 /* =================================
    13. PARKING LIST MOBILE
 ================================= */
@@ -2768,7 +2870,6 @@ a {
         flex-wrap: wrap;
     }
 }
-
 
 /* =================================
    14. HOMEPAGE SMALL MOBILE SCREENS
@@ -2822,7 +2923,6 @@ a {
     }
 }
 
-
 /* =================================
    15. DASHBOARD MOBILE
 ================================= */
@@ -2848,7 +2948,6 @@ a {
     }
 }
 
-
 /* =================================
    16. REDUCED MOTION ACCESSIBILITY
 ================================= */
@@ -2857,181 +2956,5 @@ a {
 
     .payments-table tbody tr {
         transition: background 0.2s ease;
-    }
-}
-
-/* ==========================================
-   SHARED APP MODAL SYSTEM
-========================================== */
-
-.app-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(5px);
-    animation: appModalFadeIn 0.2s ease;
-}
-
-.app-modal-dialog {
-    width: 100%;
-    max-width: 430px;
-    padding: 32px;
-    background: var(--white, #ffffff);
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    animation: appModalAppear 0.25s ease;
-}
-
-.app-modal-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 30px;
-    font-weight: 700;
-}
-
-.app-modal-success .app-modal-icon {
-    color: #15803d;
-    background: #dcfce7;
-}
-
-.app-modal-error .app-modal-icon {
-    color: #dc2626;
-    background: #fee2e2;
-}
-
-.app-modal-warning .app-modal-icon {
-    color: #b45309;
-    background: #fef3c7;
-}
-
-.app-modal-info .app-modal-icon {
-    color: #1d4ed8;
-    background: #dbeafe;
-}
-
-.app-modal-title {
-    margin: 0 0 12px;
-    color: var(--dark, #172554);
-    font-size: 22px;
-    font-weight: 700;
-}
-
-.app-modal-message {
-    margin: 0;
-    color: var(--muted, #64748b);
-    font-size: 15px;
-    line-height: 1.7;
-    overflow-wrap: anywhere;
-}
-
-.app-modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 28px;
-}
-
-.app-modal-button {
-    min-width: 120px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.app-modal-button:hover {
-    transform: translateY(-1px);
-}
-
-.app-modal-button-primary {
-    color: #ffffff;
-    background: var(--primary, #2563eb);
-}
-
-.app-modal-button-primary:hover {
-    background: var(--primary-dark, #1d4ed8);
-}
-
-.app-modal-button-secondary {
-    color: var(--text, #334155);
-    background: #f1f5f9;
-}
-
-.app-modal-button-secondary:hover {
-    background: #e2e8f0;
-}
-
-.app-modal-button-danger {
-    color: #ffffff;
-    background: #dc2626;
-}
-
-.app-modal-button-danger:hover {
-    background: #b91c1c;
-}
-
-.app-modal-button:focus-visible {
-    outline: 3px solid rgba(37, 99, 235, 0.35);
-    outline-offset: 3px;
-}
-
-@keyframes appModalFadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes appModalAppear {
-    from {
-        opacity: 0;
-        transform: translateY(12px) scale(0.97);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@media (max-width: 500px) {
-    .app-modal-dialog {
-        padding: 26px 20px;
-    }
-
-    .app-modal-actions {
-        flex-direction: column-reverse;
-    }
-
-    .app-modal-button {
-        width: 100%;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .app-modal-overlay,
-    .app-modal-dialog {
-        animation: none;
-    }
-
-    .app-modal-button {
-        transition: none;
     }
 }

@@ -8,6 +8,7 @@
     <title>{% block title %}ParkEase | Menaxhimi i Parkingjeve{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -23,12 +24,44 @@
             </a>
 
             <nav class="nav-links">
-                <a href="{% url 'home' %}" class="nav-link guest-link">Kryefaqja</a>
-                <a href="{% url 'dashboard' %}" class="nav-link user-link" id="dashboard-link" hidden>Paneli im</a>
-                <a href="{% url 'parking-list' %}" class="nav-link">Parking</a>
-                <a href="{% url 'reservations' %}" class="nav-link user-link" id="reservations-link" hidden>Rezervimet</a>
-                <a href="{% url 'payments' %}" class="nav-link user-link" id="payments-link" hidden>Pagesat</a>
-                <a href="{% url 'home' %}#about" class="nav-link guest-link">Rreth nesh</a>
+
+                <a href="{% url 'home' %}"
+                    class="nav-link guest-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                        Kryefaqja
+                </a>
+
+                <a href="{% url 'dashboard' %}"
+                    class="nav-link user-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                    id="dashboard-link"
+                    hidden>
+                        Paneli im
+                </a>
+
+                <a href="{% url 'parking-list' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'parking-list' %}active{% endif %}">
+                        Parking
+                </a>
+
+                <a href="{% url 'reservations' %}"
+                    class="nav-link user-link {% if request.resolver_match.url_name == 'reservations' %}active{% endif %}"
+                    id="reservations-link"
+                    hidden>
+                        Rezervimet
+                </a>
+
+                <a href="{% url 'payments' %}"
+                    class="nav-link user-link {% if request.resolver_match.url_name == 'payments' %}active{% endif %}"
+                    id="payments-link"
+                    hidden>
+                        Pagesat
+                </a>
+
+                <a href="{% url 'home' %}#about"
+                    class="nav-link guest-link"
+                    id="about-link">
+                        Rreth nesh
+                </a>
+
             </nav>
 
             <div class="nav-actions">
@@ -79,6 +112,7 @@
         </div>
     </footer>
 
+    <script src="{% static 'js/app-modals.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 
     {% block extra_js %}{% endblock %}
